@@ -21,41 +21,41 @@ exports.register = (req, res) => {
 };
 
 exports.login = (req, res) => {
-  User.findOne({ email: req.body.email }).then((user) => {
-    if (!user) {
-      return res.status(404).send({
-        message: "user not found",
-      });
-    }
-    let passwordValid = bcrypt.compareSync(req.body.password, user.password);
-    console.log(passwordValid);
-    if (!passwordValid) {
-      return res.status(401).send({
-        message: "password not valid",
-        auth: false,
-      });
-    }
-    let userToken = jwt.sign(
-      {
-        id: user._id,
-        isAdmin: user.isAdmin,
-      },
-      process.env.JWT_SECRET
-    );
-    console.log("pass");
-    return res
-      .send({
+  User.findOne({ email: req.body.email })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "user not found",
+        });
+      }
+      let passwordValid = bcrypt.compareSync(req.body.password, user.password);
+      console.log(passwordValid);
+      if (!passwordValid) {
+        return res.status(401).send({
+          message: "password not valid",
+          auth: false,
+        });
+      }
+      let userToken = jwt.sign(
+        {
+          id: user._id,
+          isAdmin: user.isAdmin,
+        },
+        process.env.JWT_SECRET
+      );
+      console.log("pass");
+      return res.send({
         message: "User logged",
         auth: true,
         token: userToken,
-      })
-      .catch((err) => res.status(400).send(err));
-  });
+      });
+    })
+    .catch((err) => res.Status(400).send(err));
 };
 
 exports.leaderboard = (req, res) => {
   User.find()
-    .sort({prestige: -1})
+    .sort({ prestige: -1 })
     .limit(10)
     .then((data) => {
       res.send(data);
