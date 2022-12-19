@@ -48,6 +48,7 @@ exports.login = (req, res) => {
         message: "User logged",
         auth: true,
         token: userToken,
+        id: user._id,
       });
     })
     .catch((err) => res.Status(400).send(err));
@@ -78,4 +79,17 @@ exports.addPrestige = (req, res) => {
       })
     })
     .catch(err => res.status(400).send(err))
+}
+
+exports.getUser = (req, res) => {
+  User.findById(req.params.id)
+    .then(user => {
+      if (!user) {
+        return res.status(404).send({
+        message: "user not found"
+      })
+    }
+      res.send(user);
+  })
+  .catch(err => res.status(400).send(err)) 
 }
